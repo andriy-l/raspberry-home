@@ -81,8 +81,8 @@ public class BlinkingLed {
         // continuously blink the led every 1 second 
         led2.blink(1000);
         
-        System.out.println(" ... the LED will continue blinking until the program is terminated.");
-        System.out.println(" ... PRESS <CTRL-C> TO STOP THE PROGRAM.");
+        System.out.println(" ... the LED will continue blinking until the program is terminated...");
+        System.out.println(" ... PRESS <CTRL-C> TO STOP THE PROGRAM....");
         
         // keep program running until user aborts (CTRL-C)
         for (;;) {
