@@ -86,7 +86,7 @@ public class BlinkingLed {
         
         // keep program running until user aborts (CTRL-C)
         for (;;) {
-            Thread.sleep(500);
+            Thread.sleep(510);
         }
         
         // stop all GPIO activity/threads
