@@ -59,6 +59,7 @@ public class BlinkingLed {
         final GpioPinDigitalOutput led2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_21);
 
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
+	// nowaday button is inactive
         final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_27, PinPullResistance.PULL_DOWN);
 
         // create and register gpio pin listener
