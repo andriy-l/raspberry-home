@@ -1,0 +1,2 @@
+#!/bin/bash
+sudo java -cp /home/pi/intelhouse/ih.jar:/home/pi/intelhouse/lib/pi4j-core.jar -jar /home/pi/intelhouse/ih.jar

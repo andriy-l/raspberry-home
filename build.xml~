@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="antlib:org.apache.tools.ant" name="IntelHouse" basedir="." default="build" >
+	<description>
+		Файл для формування/копіювання програми на Raspberry Pi
+	</description>
+	
+		<path id="project.class.path">
+			<pathelement path="${classpath}" />
+			<fileset dir="lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</path>
+
+	<property file="build.properties"/> 
+
+	<target name="init" depends="clean">
+  		<echo message="Creating dirs..." />
+		<mkdir dir="${build}"/>
+		<mkdir dir="${dist}"/>
+	</target>
+
+	<target name="remoteinit" unless="false" >
+		<echo message="Creating dir on RaspberryPi device..." />
+	<sshexec host="${piip}" username="pi" password="raspberry" trust="true" command="mkdir -p /home/pi/intelhouse/lib" verbose="yes" />
+
+	</target>
+
+	<target name="clean" description="очищення каталогів">
+  		<echo message="Cleaning..." />
+		<delete dir="${build}"/>
+		<delete dir="${dist}"/>
+	<sshexec host="${piip}" username="pi" password="raspberry" trust="true" command="rm -rf /home/pi/intelhouse" verbose="yes" />
+	</target>
+
+	<target name="build" depends="init">
+		<tstamp/>
+		<!--				<classpath refid="project.class.path" /> -->
+
+  		<echo message="Compiling..." />
+		<javac srcdir="${src}" destdir="${build}" classpathref="project.class.path" />
+		<jar jarfile="${dist}/ih.jar" basedir="${build}" manifest="src/${manifest}" >
+			<fileset dir="${build}" />
+			<!--	<fileset dir="lib" /> -->
+		</jar>
+	</target>
+
+	 <!--   <zip destfile="all.zip">  <zipfileset dir="./Client"  />   </zip> -->
+
+	 <!-- <target name="run" depends="deploy"> -->
+  <target name="run">
+	  <!--	  <sshexec host="${piip}" username="pi" password="raspberry"  command="sudo java -cp /home/pi/intelhouse/ih.jar:/home/pi/intelhouse/lib/pi4j-core.jar -jar /home/pi/intelhouse/ih.jar" verbose="yes" -->
+		  <sshexec host="${piip}" username="pi" password="raspberry"  command="sudo sh /home/pi/intelhouse/lib/run.jar" verbose="yes" 
+           trust="true"/>
+  </target>
+
+  <target name="deploy" depends="clean,build,remoteinit" >
+	  
+  <echo message="Sending files to devices"/>
+  <scp host="${piip}" username="pi" password="raspberry" trust="true" file="${dist}/ih.jar" todir="pi@${piip}:/home/pi/intelhouse" />
+  <scp host="${piip}" username="pi" password="raspberry" trust="true" todir="pi@${piip}:/home/pi/intelhouse/lib" >
+	  <fileset dir="lib">
+		  <include name="**/*.jar" />	
+		<exclude name="*.class" />	
+	  </fileset>
+  </scp>
+
+  </target>
+
+  <!-- <target name="testConnectionWithPi"> -->
+  <target name="ping">
+	  <exec command="ping -c 5 ${piip}" />
+  </target>
+  
+</project>
